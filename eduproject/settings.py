@@ -129,4 +129,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSTION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        # anon: None,
+        'user': '3/day',
+    },
 }
