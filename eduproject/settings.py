@@ -128,7 +128,8 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication'
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ],
     'PAGE_SIZE': 3,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -142,4 +143,8 @@ REST_FRAMEWORK = {
     #     # anon: None,
     #     'user': '3/day',
     # },
+}
+
+JWT_AUTH = {
+    'JWT_ALLOW_REFRESH': True,
 }
