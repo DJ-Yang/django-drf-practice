@@ -1,12 +1,17 @@
 from django.shortcuts import render
 
 from rest_framework import generics
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.permissions import IsAuthenticated
 from .serializers import PostSerializer
 from .models import Post
+
+from .permissions import IsAuthorOrReadonly
 
 # 제네릭을 사용한 클래스 기반 뷰 구현
 # class PublicPostListAPIView(generics.ListAPIView):
@@ -34,6 +39,13 @@ from .models import Post
 class PostViewSet(ModelViewSet):
   queryset = Post.objects.all()
   serializer_class = PostSerializer
+  # authentication_classes = [IsAuthenticated]
+  permission_classes = [IsAuthenticated, IsAuthorOrReadonly]
+
+  def perform_create(self, serializer):
+    author = self.request.user
+    ip=self.request.META['REMOTE_ADDR']
+    serializer.save(ip=ip, author=author)
 
   @action(detail=False, methods=['GET'])
   def public(self, request):
@@ -48,3 +60,15 @@ class PostViewSet(ModelViewSet):
     instance.save(update_fields=['is_public'])
     serializer = self.get_serializer(instance)
     return Response(serializer.data)
+
+class PostDetailAPIView(RetrieveAPIView):
+  queryset = Post.objects.all()
+  renderer_classes = [TemplateHTMLRenderer]
+  template_name = 'instagram/post_detail.html'
+
+  def get(self, request, *args, **kwargs):
+    post = self.get_object()
+    
+    return Response({
+      'post': PostSerializer(post).data
+,    })

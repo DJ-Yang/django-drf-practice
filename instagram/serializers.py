@@ -13,4 +13,12 @@ class PostSerializer(serializers.ModelSerializer):
   # author = AuthorSerializer()
   class Meta:
     model = Post
-    fields = ['pk', 'message', 'created_at', 'updated_at', 'author_username', 'is_public']
+    fields = [
+      'pk',
+      'message',
+      'created_at',
+      'updated_at',
+      'author_username',
+      'is_public',
+      'ip',
+    ]
