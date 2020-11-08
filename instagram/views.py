@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter, OrderingFilter
 from .serializers import PostSerializer
 from .models import Post
 
@@ -41,6 +42,10 @@ class PostViewSet(ModelViewSet):
   serializer_class = PostSerializer
   # authentication_classes = [IsAuthenticated]
   permission_classes = [IsAuthenticated, IsAuthorOrReadonly]
+
+  filter_backends = [SearchFilter, OrderingFilter]
+  search_fields = ['^message']
+  ordering_fields = ['id']
 
   def perform_create(self, serializer):
     author = self.request.user
